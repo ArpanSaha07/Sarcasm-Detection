@@ -7,40 +7,40 @@ from nltk.corpus import stopwords
 from sklearn.base import BaseEstimator, TransformerMixin
 import re
 
-# Emotion Dictionary
-EMOTICONS = {
-    r':D': '[LAUGHING]',
-    r';\)': '[WINK]',
-    r';-\)': '[WINK]',
-    r';D': '[LAUGHINGWINK]',
-    r':o': '[SURPRISED]',
-    r'=\(': '[SAD]',
-    r':\[': '[SAD]',
-    r':-\(': '[SAD]',
-    r':\(': '[SAD]',
-    r'=\/': '[CONFUSED]',
-    r'\b83\b': '[LOVE]',
-    r'8p': '[PLAYFUL]',
-    r':P': '[PLAYFUL]',
-    r':3': '[CUTE]',
-    r':]': '[HAPPY]',
-    r'=]': '[HAPPY]',
-    r'=\)': '[HAPPY]',
-    r'=D': '[LAUGHING]',
-    r':-/': '[CONFUSED]',
-    r':>': '[SMUG]',
-    r'8/': '[CONFUSED]',
-    r':<': '[DISPLEASED]',
-    r':O': '[SURPRISED]',
-    r'=o': '[SURPRISED]',
-    r':-\|': '[NEUTRAL]',
-    r':-\)': '[HAPPY]',
-    r':\)': '[HAPPY]',
-}
-
 class TextPreprocessor(BaseEstimator, TransformerMixin):
 
     """ Modular text preprocessing class """
+
+    # Emotion Dictionary
+    EMOTICONS = {
+        r':D': '[LAUGHING]',
+        r';\)': '[WINK]',
+        r';-\)': '[WINK]',
+        r';D': '[LAUGHINGWINK]',
+        r':o': '[SURPRISED]',
+        r'=\(': '[SAD]',
+        r':\[': '[SAD]',
+        r':-\(': '[SAD]',
+        r':\(': '[SAD]',
+        r'=\/': '[CONFUSED]',
+        r'\b83\b': '[LOVE]',
+        r'8p': '[PLAYFUL]',
+        r':P': '[PLAYFUL]',
+        r':3': '[CUTE]',
+        r':]': '[HAPPY]',
+        r'=]': '[HAPPY]',
+        r'=\)': '[HAPPY]',
+        r'=D': '[LAUGHING]',
+        r':-/': '[CONFUSED]',
+        r':>': '[SMUG]',
+        r'8/': '[CONFUSED]',
+        r':<': '[DISPLEASED]',
+        r':O': '[SURPRISED]',
+        r'=o': '[SURPRISED]',
+        r':-\|': '[NEUTRAL]',
+        r':-\)': '[HAPPY]',
+        r':\)': '[HAPPY]',
+    }
 
     def __init__(self, 
                  use_lemmatization = True,
@@ -138,23 +138,44 @@ class TextPreprocessor(BaseEstimator, TransformerMixin):
 
         return ' '.join(tokens)
 
-# Example usage
-# documents = [
-#     "The quick brown fox jumps over the lazy dog.",
-#     "NLTK is a leading platform for building Python programs to work with human language data.",
-#     "Scikit-learn provides simple and efficient tools for data mining and data analysis."
-# ]
+# Example with pandas DataFrame
+# import pandas as pd
 
-# # Define the pipeline
-# pipeline = Pipeline([
-#     ('preprocessor', TextPreprocessor(use_lemmatization=True, use_stopwords=True)),
-#     ('vectorizer', TfidfVectorizer()),
-#     ('classifier', LogisticRegression())
-# ])
+# Assuming your data looks like this:
+# df = pd.DataFrame({
+#     'text': ["I love this product :)", "Not happy with it :(", ...],
+#     'label': [1, 0, ...]
+# })
 
-# # Fit the pipeline
-# pipeline.fit(documents, [0, 1, 0])
+# 1. Basic Pipeline Setup
+# def create_text_pipeline():
+#     return Pipeline([
+#         ('preprocessor', TextPreprocessor(
+#             use_lemmatization=True,
+#             use_stopwords=True,
+#             lowercase=True,
+#             remove_punctuation=True,
+#             process_emoticons=True
+#         )),
+#         ('vectorizer', TfidfVectorizer()),
+#         ('classifier', LinearSVC())
+#     ])
 
-# # Transform and predict
-# predictions = pipeline.predict(documents)
-# print(predictions)
+# # 2. Train-Test Split
+# X_train, X_test, y_train, y_test = train_test_split(
+#     df['text'],
+#     df['label'],
+#     test_size=0.2,
+#     random_state=42
+# )
+
+# # 3. Fit and Predict
+# pipeline = create_text_pipeline()
+# pipeline.fit(X_train, y_train)
+
+# # Make predictions
+# predictions = pipeline.predict(X_test)
+
+# # 4. Evaluate
+# from sklearn.metrics import classification_report
+# print(classification_report(y_test, predictions))
