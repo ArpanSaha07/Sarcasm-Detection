@@ -2,7 +2,7 @@ from typing import Tuple, List, Any
 import pandas as pd
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
-from .dataset import SarcasmDataset
+from .bert_dataset import SarcasmDataset
 
 def find_max_len(
     df: pd.DataFrame, 
